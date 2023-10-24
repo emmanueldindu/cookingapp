@@ -1,10 +1,33 @@
 import { StatusBar } from 'expo-status-bar'
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import { View, Text, ScrollView, Image, TextInput } from 'react-native'
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen'
 import {BellIcon, MagnifyingGlassIcon} from 'react-native-heroicons/outline'
 import Categories from '../components/categories'
+import axios from 'axios'
 const HomeScreen = () => {
+
+  const [activeCategory, setActiveCategory] = useState('Beef')
+  const [categories, setCategories] = useState([]);
+
+
+  useEffect(() => {
+  getCategories()
+  }, [])
+
+  const getCategories = async () => {
+  try {
+    const response = await axios.get('https://themealdb.com/api/json/v1/1/categories.php');
+    // console.log(response.data)
+    if (response && response.data) {
+      setCategories(response.data.categories)
+    }
+  } catch (error) {
+    console.log(error.message)
+  }
+}
+
+
   return (
     <View className="flex-1 bg-white">
       <StatusBar style='dark' />
@@ -58,7 +81,8 @@ const HomeScreen = () => {
         </View>
 
         <View>
-          <Categories />
+{      <Categories  categories={categories} activeCategory={activeCategory} setActiveCategory={setActiveCategory} />
+          }
         </View>
           
 
